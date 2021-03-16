@@ -1,12 +1,12 @@
 [
     {
-        "name":"CV",
-        "member": "Muste Bogdan",
-        "url": "non"
-    }, 
+        "name": "CV",
+        "membres": "Muste Bogdan",
+        "url": "https://github.com/bogdanmuste"
+    },
     {
-        "name":"cj",
-        "member": "Muste Bogdan",
-        "url": "non"
+            "name": "CV",
+            "membres": "teams-networking",
+            "url": "https://github.com/bogdanmuste"
     }
 ]
