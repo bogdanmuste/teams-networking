@@ -3,10 +3,10 @@ let allTeams = [];
 function getHtmlTeams(teams) {
    return teams.map(team => {
     return `<tr> 
-        <td>${team.members}</td>
+        <td>${team.membes}</td>
         <td>${team.name}CV</td>
         <td>${team.url}</td>
-        <td>&#1006; &39998</td>
+        <td>&#1006; &39998;</td>
     </tr>`
 }).join("")
 }
@@ -25,19 +25,28 @@ fetch("teams.json")
         showTeams(teams);
     });
 
+function addteam(team) {
+    fetch("add.json",{
+        method: "POST",
+        body: JSON.stringify(team)
+    })
+        .then(r => r.json())
+        .then(status => {
+            console.warn('status', status);
+    });
 
-// function saveTeam() {
-//    const members =  document.querySelector("input[name=members]").value;
-//    const mame =  document.querySelector("input[name=name]").value;
-//    const url =  document.querySelector("input[name=url]").value;
+}
 
-//     const team = {
-//         name: name,
-//         members: members,
-//         url: url
-//     };
-//     console.console.warn('save taem', JSON.stringify(team));
+    function saveTeam() {
+        const members = document.querySelector("input[name=members]").value;
+        const name = document.querySelector("input[name=name]").value;
+        const url = document.querySelector("input[name=url]").value;
 
-//     console.warn("save team", members,name, url);
-// }    
+        const team = {
+            name: name,
+            members: members,
+            url: url
+        };
+        addteam(team);
+    }
 
