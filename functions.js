@@ -3,10 +3,10 @@ let allTeams = [];
 function getHtmlTeams(teams) {
    return teams.map(team => {
     return `<tr> 
-        <td>${team.membes}</td>
+        <td>${team.members}</td>
         <td>${team.name}CV</td>
         <td>${team.url}</td>
-        <td>&#1006; &39998;</td>
+        <td>&#9747; &#9998;</td>
     </tr>`
 }).join("")
 }
@@ -18,7 +18,7 @@ function getHtmlTeams(teams) {
     tbody.innerHTML = html;
 }
 
-fetch("teams.json")
+fetch("http://localhost:3000/teams-json")
     .then(r => r.json())
     .then(teams => {
         allTeams = teams;
@@ -26,9 +26,13 @@ fetch("teams.json")
     });
 
 function addteam(team) {
-    fetch("add.json",{
+    fetch("http://localhost:3000/teams-json/create",{
         method: "POST",
-        body: JSON.stringify(team)
+        body: JSON.stringify(team),
+        headers: {
+            "Contest-Type": "application/jonson"
+        }
+        
     })
         .then(r => r.json())
         .then(status => {
