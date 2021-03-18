@@ -6,7 +6,11 @@ function getHtmlTeams(teams) {
         <td>${team.members}</td>
         <td>${team.name}CV</td>
         <td>${team.url}</td>
-        <td>&#9747; &#9998;</td>
+        <td>
+        <a href="#" class="remove-btm" data-id="${team.id}">&#9747;</a>
+        <a href="#" class="edit-btn">&#9998;</a>
+        
+        </td>
     </tr>`
 }).join("")
 }
@@ -16,6 +20,15 @@ function getHtmlTeams(teams) {
 
     const tbody = document.querySelector("tbody");
     tbody.innerHTML = html;
+}
+ 
+function loadTeams() {
+    fetch("http://localhost:3000/teams-json")
+    .then(r => r.json())
+    .then(teams => {
+        allTeams = teams;
+        showTeams(teams);
+    });
 }
 
 fetch("http://localhost:3000/teams-json")
@@ -36,9 +49,19 @@ function addteam(team) {
     })
         .then(r => r.json())
         .then(status => {
-            console.warn('status', status);
+           if (status.success) {
+               loadTeams();
+           }
     });
-
+}
+function removeTeam(id) {
+    fetch ( "http: // localhost: 3000/teams-json/delete" ,  { 
+  method : "DELETE" , 
+  headers : { 
+    "Content-Type" : "application / json" 
+  } , 
+  body : JSON . Stringify ( {  id : id } ) 
+} ) ;
 }
 
     function saveTeam() {
@@ -54,3 +77,9 @@ function addteam(team) {
         addteam(team);
     }
 
+    document.querySelector("table tbody").addEventListener("click", e => {
+        if( e.target.matches("a.remove-btm")) {
+            const id = e.target.getAttribute('data-id');
+            removeTeam(id)
+        }
+    })
