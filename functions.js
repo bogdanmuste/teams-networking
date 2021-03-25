@@ -1,4 +1,5 @@
 let allTeams = [];
+let editId;
 
 function getHtmlTeams(teams) {
    return teams.map(team => {
@@ -38,9 +39,26 @@ fetch("http://localhost:3000/teams-json")
         showTeams(teams);
     });
 
-function addteam(team) {
+function addTeam(team) {
     fetch("http://localhost:3000/teams-json/create",{
         method: "POST",
+        body: JSON.stringify(team),
+        headers: {
+            "Contest-Type": "application/jonson"
+        }
+        
+    })
+        .then(r => r.json())
+        .then(status => {
+            if (status.success) {
+                loadTeams();
+            }
+        });
+}
+
+function updateTeam(team) {
+    fetch("http://localhost:3000/teams-json/update",{
+        method: "Put",
         body: JSON.stringify(team),
         headers: {
             "Contest-Type": "application/jonson"
@@ -81,21 +99,35 @@ function saveTeam() {
         members: members,
         url: url
     };
-    addteam(team);
+    console.warn(team, editId);
+    if (editId) {
+        team.id = editId
+        console.warn('uodate', team, editId);
+        updateTeam(team);
+    } else {
+        addTeam(team);
+
+    }
+    
 }
 
-    document.querySelector("table tbody").addEventListener("click", e => {
-        if( e.target.matches("a.remove-btm")) {
-            const id = e.target.getAttribute('data-id');
-            removeTeam(id)
-        } else if (e.target.matches("a.edit-btn")) { 
-            const id = e.target.getAttribute('data-id');
-            console.warn('edit?', id);
-          
-            const editTeam = allTeams.find(team => {
-                // console.warm('find team', team.id == id);
-                return team.id == id;
-            });
-            console.warn('edit', editTeam )
-        }
-    })
+document.querySelector("table tbody").addEventListener("click", e => {
+    if( e.target.matches("a.remove-btm")) {
+        const id = e.target.getAttribute('data-id');
+        removeTeam(id)
+    } else if (e.target.matches("a.edit-btn")) { 
+        document.getElementById('saveBtn').innerText = 'update'
+
+        const id = e.target.getAttribute('data-id');
+        const editTeam = allTeams.find(team => team.id == id);
+        setValues(editTeam);
+        editId = id
+    }
+});
+
+function setValues(team) {
+    document.querySelector("input[name=members]").value = team.members;
+    document.querySelector("input[name=name]").value = team.name;
+    document.querySelector("input[name=url]").value = team.url;
+}
+
