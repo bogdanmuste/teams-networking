@@ -7,8 +7,8 @@ function getHtmlTeams(teams) {
         <td>${team.name}CV</td>
         <td>${team.url}</td>
         <td>
-        <a href="#" class="remove-btm" data-id="${team.id}">&#9747;</a>
-        <a href="#" class="edit-btn">&#9998;</a>
+        <a href="#" data-id="${team.id}" class="remove-btm" >&#9747;</a>
+        <a href="#" data-id="${team.id}" class="edit-btn" >&#9998;</a>
         
         </td>
     </tr>`
@@ -49,37 +49,53 @@ function addteam(team) {
     })
         .then(r => r.json())
         .then(status => {
-           if (status.success) {
-               loadTeams();
-           }
+            if (status.success) {
+                loadTeams();
+            }
+        });
+}
+
+function removeTeam(id) {
+    fetch("http://localhost:3000/teams-json/delete", { 
+        method : "DELETE", 
+        headers : { 
+            "Content-Type":"application/json" 
+        }, 
+        body:JSON.stringify({id: id} ) 
+    })
+    .then(r => r.json())
+    .then(status => {
+        if (status.success) {
+            loadTeams();
+        }
     });
 }
-function removeTeam(id) {
-    fetch ( "http: // localhost: 3000/teams-json/delete" ,  { 
-  method : "DELETE" , 
-  headers : { 
-    "Content-Type" : "application / json" 
-  } , 
-  body : JSON . Stringify ( {  id : id } ) 
-} ) ;
+
+function saveTeam() {
+    const members = document.querySelector("input[name=members]").value;
+    const name = document.querySelector("input[name=name]").value;
+    const url = document.querySelector("input[name=url]").value;
+
+    const team = {
+        name: name,
+        members: members,
+        url: url
+    };
+    addteam(team);
 }
-
-    function saveTeam() {
-        const members = document.querySelector("input[name=members]").value;
-        const name = document.querySelector("input[name=name]").value;
-        const url = document.querySelector("input[name=url]").value;
-
-        const team = {
-            name: name,
-            members: members,
-            url: url
-        };
-        addteam(team);
-    }
 
     document.querySelector("table tbody").addEventListener("click", e => {
         if( e.target.matches("a.remove-btm")) {
             const id = e.target.getAttribute('data-id');
             removeTeam(id)
+        } else if (e.target.matches("a.edit-btn")) { 
+            const id = e.target.getAttribute('data-id');
+            console.warn('edit?', id);
+          
+            const editTeam = allTeams.find(team => {
+                // console.warm('find team', team.id == id);
+                return team.id == id;
+            });
+            console.warn('edit', editTeam )
         }
     })
