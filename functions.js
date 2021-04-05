@@ -24,7 +24,7 @@ function getHtmlTeams(teams) {
 }
  
 function loadTeams() {
-    fetch("http://localhost:3000/teams-json")
+    fetch("http://localhost:3000/teams")
     .then(r => r.json())
     .then(teams => {
         allTeams = teams;
@@ -32,20 +32,14 @@ function loadTeams() {
     });
 }
 
-fetch("http://localhost:3000/teams-json")
-    .then(r => r.json())
-    .then(teams => {
-        allTeams = teams;
-        showTeams(teams);
-    });
 
 function addTeam(team) {
-    fetch("http://localhost:3000/teams-json/create",{
+    fetch("http://localhost:3000/teams/create",{
         method: "POST",
         body: JSON.stringify(team),
-        headers: {
-            "Contest-Type": "application/jonson"
-        }
+        headers:{ 
+            "Content-Type":"application/json" 
+          }
         
     })
         .then(r => r.json())
@@ -61,7 +55,7 @@ function updateTeam(team) {
         method: "Put",
         body: JSON.stringify(team),
         headers: {
-            "Contest-Type": "application/jonson"
+            "Content-Type":"application/json"
         }
         
     })
@@ -124,6 +118,17 @@ document.querySelector("table tbody").addEventListener("click", e => {
         editId = id
     }
 });
+
+document.getElementById('search').addEventListener('input', e => {
+    const text = e.target.value.toLowerCase();
+    console.warn('search', text);
+  
+    const filtered = allTeams.filter(team => {
+      return team.members.toLowerCase().indexOf(text) > -1;
+    });
+    console.warn(filtered);
+    showTeams(filtered);
+  });
 
 function setValues(team) {
     document.querySelector("input[name=members]").value = team.members;
